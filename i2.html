@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edebî Dil ve Sosyal Medya Dili Karşılaştırması</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        :root {
+            /* Geliştirilmiş Renk Paleti */
+            --primary-color: #3498db; /* Canlı Mavi */
+            --secondary-color: #5dade2; /* Açık Mavi */
+            --accent-color: #e74c3c; /* Vurgu Rengi - Mercan */
+            --bg-light: #ecf0f1; /* Çok Açık Gri Arka Plan */
+            --bg-section-odd: #ffffff; /* Beyaz Kart/Bölüm Arka Planı */
+            --bg-section-even: #f7f9f9; /* Hafif Gri Bölüm Arka Planı */
+            --text-dark: #2c3e50; /* Koyu Gri Metin (Neredeyse Siyah) */
+            --text-light: #ffffff; /* Açık Metin */
+            --border-color: #d7dbdd; /* İnce Kenarlık Rengi */
+            --card-shadow: 0 6px 18px rgba(44, 62, 80, 0.1); /* Yumuşak Kart Gölgesi */
+            --header-shadow: 0 4px 12px rgba(44, 62, 80, 0.15);
+            --transition-speed: 0.35s;
+            --border-radius: 12px; /* Daha yuvarlak köşeler */
+        }
+
+        /* Temel Sayfa Stilleri */
+        body {
+            font-family: 'Montserrat', sans-serif; /* Modern sans-serif font */
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.7; /* Artırılmış satır yüksekliği */
+            scroll-behavior: smooth;
+            opacity: 0;
+            animation: fadeInBody 0.8s 0.2s forwards; /* Yükleme sonrası yumuşak geçiş */
+        }
+
+        @keyframes fadeInBody {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Yükleme Ekranı */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
+        }
+
+        .loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .spinner {
+            border: 6px solid rgba(52, 152, 219, 0.2); /* Ana renkle uyumlu spinner */
+            border-top: 6px solid var(--primary-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Header Stilleri */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-light);
+            padding: 60px 20px; /* Daha ferah padding */
+            text-align: center;
+            box-shadow: var(--header-shadow);
+            border-bottom-left-radius: var(--border-radius);
+            border-bottom-right-radius: var(--border-radius);
+            position: relative; /* Arka plan animasyonu için */
+            overflow: hidden; /* Animasyonun taşmasını engelle */
+        }
+
+        /* Header Arka Plan Animasyonu */
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top left, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%),
+                        radial-gradient(circle at bottom right, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            animation: moveGradient 15s infinite alternate;
+            opacity: 0.8;
+            z-index: 0;
+        }
+
+        @keyframes moveGradient {
+            0% { background-position: 0% 0%, 100% 100%; }
+            100% { background-position: 100% 100%, 0% 0%; }
+        }
+
+        header h1 {
+            font-family: 'Merriweather', serif; /* Başlıklar için serif font */
+            font-size: 3.2em;
+            margin-bottom: 15px;
+            animation: slideInDown 0.7s ease-out;
+            font-weight: 700;
+            position: relative; /* Z-index için */
+            z-index: 1;
+        }
+
+        header p {
+            font-size: 1.3em;
+            opacity: 0.9;
+            animation: slideInUp 0.7s 0.1s ease-out; /* Hafif gecikmeli animasyon */
+            font-weight: 300;
+            position: relative; /* Z-index için */
+            z-index: 1;
+        }
+
+        @keyframes slideInDown {
+            from { transform: translateY(-40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideInUp {
+            from { transform: translateY(40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Navigasyon Stilleri */
+        nav {
+            background-color: var(--text-dark);
+            padding: 12px 0;
+            text-align: center;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav a {
+            color: var(--text-light);
+            text-decoration: none;
+            padding: 12px 20px; /* Daha geniş tıklama alanı */
+            margin: 0 8px;
+            border-radius: var(--border-radius);
+            transition: background-color var(--transition-speed), color var(--transition-speed), transform var(--transition-speed);
+            font-weight: 500;
+            display: inline-flex; /* İkon ve metni hizalamak için */
+            align-items: center;
+            gap: 8px; /* İkon ve metin arası boşluk */
+        }
+
+        nav a:hover, nav a.active-link { /* Aktif link için de stil */
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        /* Genel İçerik Konteyneri */
+        .container {
+            max-width: 1100px; /* Biraz daha dar ve odaklı */
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        /* Bölüm Stilleri */
+        section {
+            padding: 50px 40px; /* Daha ferah padding */
+            margin-bottom: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: sectionSlideIn 0.7s forwards;
+            animation-play-state: paused; /* Intersection observer ile tetiklenecek */
+        }
+
+        section:nth-child(odd) {
+            background-color: var(--bg-section-odd);
+        }
+        section:nth-child(even) {
+            background-color: var(--bg-section-even);
+        }
+
+        @keyframes sectionSlideIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            font-family: 'Merriweather', serif;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h2::after { /* Daha zarif bir alt çizgi */
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 4px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        /* Giriş Bölümü Özel Stil */
+        #giris p {
+            font-size: 1.15em;
+            text-align: justify;
+            color: #34495e; /* Biraz daha yumuşak metin rengi */
+        }
+
+        /* Kart Gridi Stilleri */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 30px;
+            margin-top: 35px;
+        }
+
+        .card {
+            background-color: var(--bg-section-odd); /* Kartlar her zaman beyaz */
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+            border: 1px solid var(--border-color); /* İnce bir kenarlık */
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02); /* Daha belirgin hover efekti */
+            box-shadow: 0 12px 28px rgba(44, 62, 80, 0.15);
+        }
+
+        .card h3 {
+            color: var(--primary-color);
+            font-family: 'Merriweather', serif;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+        }
+
+        .card p {
+            font-size: 1em;
+            color: var(--text-dark);
+            line-height: 1.8;
+            flex-grow: 1; /* İçeriği eşit dağıtmak için */
+        }
+
+        /* Tab Stilleri */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 35px;
+            flex-wrap: wrap;
+            gap: 10px; /* Butonlar arası boşluk */
+        }
+
+        .tab-button {
+            background-color: var(--secondary-color);
+            color: var(--text-light);
+            border: none;
+            padding: 14px 28px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 500;
+            transition: background-color var(--transition-speed), transform var(--transition-speed), box-shadow var(--transition-speed);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-button:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-4px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .tab-button.active {
+            background-color: var(--accent-color); /* Aktif tab için vurgu rengi */
+            color: var(--text-light);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .tab-content {
+            background-color: var(--bg-section-even); /* Sekme içeriği için farklı arka plan */
+            padding: 35px;
+            border-radius: var(--border-radius);
+            box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.06);
+            display: none;
+            animation: fadeInTab 0.6s ease-in-out;
+        }
+
+        @keyframes fadeInTab {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tab-content h4 {
+            color: var(--accent-color);
+            margin-top: 0;
+            margin-bottom: 18px;
+            font-size: 1.5em;
+            font-family: 'Merriweather', serif;
+        }
+
+        /* Tablo Stilleri */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            border-radius: var(--border-radius); /* Daha yuvarlak köşeler */
+            overflow: hidden; /* Köşeleri yuvarlatmak için */
+        }
+
+        table thead {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+        }
+
+        table th, table td {
+            padding: 18px 20px; /* Daha ferah hücreler */
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 1em;
+        }
+
+        table th {
+            font-weight: 700;
+        }
+
+        table tbody tr:nth-child(even) {
+            background-color: var(--bg-section-even);
+        }
+
+        table tbody tr:hover {
+            background-color: #d6eaf8; /* Mavi tonlu hover */
+            transition: background-color var(--transition-speed);
+        }
+
+        /* Grafik Stilleri */
+        .chart-container {
+            width: 90%;
+            max-width: 650px;
+            margin: 50px auto;
+            background-color: var(--bg-section-odd);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+        }
+
+        /* Liste Stilleri (Olumlu/Olumsuz Etkiler) */
+        .impact-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 30px;
+        }
+
+        .impact-list li {
+            background-color: var(--bg-section-odd);
+            border: 1px solid var(--border-color);
+            padding: 18px 25px;
+            margin-bottom: 15px;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: flex-start;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform var(--transition-speed);
+            font-size: 1.05em;
+        }
+
+        .impact-list li:hover {
+            transform: translateY(-5px);
+        }
+
+        .impact-list li::before {
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            display: inline-block;
+            width: 1.2em;
+            margin-right: 0.5em; /* İkon ve metin arası boşluk */
+            text-align: center;
+            line-height: 1;
+            font-size: 1.2em;
+            color: var(--primary-color); /* Varsayılan olarak primary renk */
+        }
+
+        .impact-list li.positive::before {
+            content: "\f058"; /* check-circle ikon */
+            color: #27ae60; /* Yeşil */
+        }
+
+        .impact-list li.negative::before {
+            content: "\f06a"; /* exclamation-circle ikon */
+            color: var(--accent-color); /* Kırmızı */
+        }
+
+        .impact-list strong {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        /* Şiir Örnekleri Stili */
+        #siir-ornekleri .siir-kart {
+            background-color: var(--bg-section-even);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--card-shadow);
+            transition: transform var(--transition-speed);
+        }
+
+        #siir-ornekleri .siir-kart:hover {
+            transform: translateY(-5px);
+        }
+
+        #siir-ornekleri .siir-kart h3 {
+            color: var(--accent-color);
+            font-family: 'Merriweather', serif;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+            text-align: center;
+        }
+
+        #siir-ornekleri .siir-kart pre {
+            font-family: 'Merriweather', serif;
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: var(--text-dark);
+            background-color: #f0f4f7;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e6eb;
+            white-space: pre-wrap; /* Uzun dizelerin sarılmasını sağlar */
+        }
+
+        #siir-ornekleri .siir-kart p.sair-adi {
+            text-align: right;
+            font-style: italic;
+            margin-top: 15px;
+            color: #555;
+        }
+
+
+        /* Accordion Stilleri */
+        .accordion-item {
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            background-color: var(--bg-section-odd);
+        }
+
+        .accordion-header {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            padding: 18px 25px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.2em;
+            font-weight: 500;
+            transition: background-color var(--transition-speed);
+        }
+
+        .accordion-header:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .accordion-header .icon {
+            font-size: 1.5em;
+            transition: transform var(--transition-speed);
+        }
+
+        .accordion-header.active .icon {
+            transform: rotate(45deg);
+        }
+
+        .accordion-content {
+            padding: 0 25px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            background-color: var(--bg-section-even);
+        }
+
+        .accordion-content.active {
+            max-height: 500px; /* Yeterince büyük bir değer */
+            padding: 25px;
+        }
+
+        .accordion-content p {
+            margin-bottom: 0;
+            font-size: 1.05em;
+            color: #34495e;
+        }
+
+        /* Yanlış Örnekler Stil */
+        #yanlis-ornekler-konteyner {
+            margin-top: 30px;
+        }
+
+        .wrong-example {
+            background-color: #fef9e7; /* Yumuşak Sarı */
+            border-left: 6px solid #f1c40f; /* Sarı Kenarlık */
+            padding: 18px 25px;
+            margin-bottom: 22px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.07);
+            animation: wrongExampleSlideIn 0.5s ease-out;
+        }
+
+        @keyframes wrongExampleSlideIn {
+            from { opacity:0; transform: translateX(-20px); }
+            to { opacity:1; transform: translateX(0); }
+        }
+
+        .wrong-example p {
+            margin: 5px 0;
+            font-size: 1.05em;
+            color: #34495e;
+        }
+
+        .wrong-example strong {
+            color: var(--accent-color);
+        }
+
+        .wrong-example .correct-text {
+            color: #27ae60;
+        }
+
+        #daha-fazla-yanlis-butonu {
+            display: block;
+            margin: 30px auto 0;
+            background-color: var(--accent-color);
+            color: var(--text-light);
+            border: none;
+            padding: 15px 30px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 500;
+            transition: background-color var(--transition-speed), transform var(--transition-speed), box-shadow var(--transition-speed);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        #daha-fazla-yanlis-butonu:hover {
+            background-color: #c0392b;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        /* Yeni Proje Blog Stilleri */
+        .project-block {
+            background-color: var(--bg-section-odd);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: transform var(--transition-speed) ease;
+        }
+
+        .project-block:hover {
+            transform: translateY(-5px);
+        }
+
+        .project-block h3 {
+            color: var(--primary-color);
+            font-family: 'Merriweather', serif;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+
+        .project-block p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .project-block a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--transition-speed);
+        }
+
+        .project-block a:hover {
+            color: #c0392b;
+            text-decoration: underline;
+        }
+
+        /* Fotoğraf Stilleri */
+        .image-container {
+            text-align: center;
+            margin: 40px 0;
+            background-color: var(--bg-section-even);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .image-container img:hover {
+            transform: scale(1.03);
+        }
+
+        .image-caption {
+            margin-top: 15px;
+            font-style: italic;
+            color: #555;
+            font-size: 0.95em;
+        }
+
+        /* Footer Stilleri */
+        footer {
+            background-color: var(--text-dark);
+            color: var(--text-light);
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 50px;
+            border-top-left-radius: var(--border-radius);
+            border-top-right-radius: var(--border-radius);
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        footer p {
+            margin: 5px 0;
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+
+        footer a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            margin: 0 10px;
+            transition: color var(--transition-speed);
+        }
+
+        footer a:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+
+        /* Başa Dön Butonu */
+        #scrollTopBtn {
+            display: none; /* Varsayılan olarak gizli */
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 99;
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            border: none;
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            font-size: 1.8em;
+            line-height: 1;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: background-color var(--transition-speed), transform var(--transition-speed), opacity var(--transition-speed);
+            opacity: 0;
+            display: flex; /* İçeriği ortalamak için */
+            justify-content: center;
+            align-items: center;
+        }
+
+        #scrollTopBtn:hover {
+            background-color: #2980b9; /* Koyu Mavi */
+            transform: scale(1.1);
+        }
+
+        /* Responsive Düzenlemeler */
+        @media (max-width: 992px) { /* Tabletler için */
+            header h1 {
+                font-size: 2.8em;
+            }
+            header p {
+                font-size: 1.15em;
+            }
+            h2 {
+                font-size: 2.2em;
+            }
+            .container {
+                margin: 40px auto;
+                padding: 0 15px;
+            }
+            section {
+                padding: 40px 25px;
+                margin-bottom: 30px;
+            }
+            .card-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 25px;
+            }
+            .card {
+                padding: 25px;
+            }
+            .card h3 {
+                font-size: 1.5em;
+            }
+            .tab-button {
+                padding: 12px 22px;
+                font-size: 1em;
+            }
+            .tab-content {
+                padding: 30px;
+            }
+            table th, table td {
+                padding: 15px 18px;
+                font-size: 0.95em;
+            }
+            .chart-container {
+                width: 95%;
+                padding: 25px;
+                margin: 40px auto;
+            }
+            .impact-list li {
+                padding: 15px 20px;
+                font-size: 1em;
+            }
+            .accordion-header {
+                padding: 15px 20px;
+                font-size: 1.1em;
+            }
+            .accordion-content.active {
+                padding: 20px;
+            }
+            .wrong-example {
+                padding: 15px;
+            }
+            .wrong-example p {
+                font-size: 1em;
+            }
+            .wrong-example button {
+                padding: 8px 15px;
+                margin-top: 15px;
+            }
+            #daha-fazla-yanlis-butonu {
+                padding: 12px 25px;
+                font-size: 1em;
+            }
+            .project-block {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 768px) { /* Daha küçük tabletler ve büyük telefonlar için */
+            header h1 {
+                font-size: 2.5em;
+            }
+            header p {
+                font-size: 1.05em;
+            }
+            nav a {
+                padding: 10px 15px;
+                margin: 0 5px;
+                font-size: 0.9em;
+            }
+            h2 {
+                font-size: 2em;
+            }
+            section {
+                padding: 30px 20px;
+            }
+            .card-grid {
+                grid-template-columns: 1fr; /* Tek sütun */
+                gap: 20px;
+            }
+            .tab-button {
+                padding: 10px 18px;
+                font-size: 0.9em;
+            }
+            .tab-content {
+                padding: 25px;
+            }
+            table thead {
+                display: none; /* Başlıkları gizle */
+            }
+            table, table tbody, table tr, table td {
+                display: block; /* Hücreleri blok yap */
+                width: 100%;
+            }
+            table tr {
+                margin-bottom: 15px;
+                border: 1px solid var(--border-color);
+                border-radius: var(--border-radius);
+                box-shadow: var(--card-shadow);
+            }
+            table td {
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+            table td::before { /* Başlıkları sahte etiket olarak göster */
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: calc(50% - 20px);
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: 700;
+                color: var(--primary-color);
+            }
+            .chart-container {
+                width: 100%;
+                padding: 20px;
+            }
+            .impact-list li {
+                padding: 12px 15px;
+                font-size: 0.9em;
+            }
+            .accordion-header {
+                padding: 12px 15px;
+                font-size: 1em;
+            }
+            .accordion-content.active {
+                padding: 15px;
+            }
+            #scrollTopBtn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5em;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+
+        @media (max-width: 480px) { /* Çok küçük telefonlar için */
+            header h1 {
+                font-size: 2em;
+            }
+            header p {
+                font-size: 0.95em;
+            }
+            nav {
+                padding: 10px 0;
+            }
+            nav a {
+                display: block;
+                margin: 5px auto;
+                width: fit-content;
+                font-size: 0.85em;
+            }
+            h2 {
+                font-size: 1.8em;
+                margin-bottom: 30px;
+            }
+            section {
+                padding: 20px 15px;
+            }
+            .card {
+                padding: 20px;
+            }
+            .card h3 {
+                font-size: 1.3em;
+            }
+            .tab-button {
+                padding: 8px 15px;
+                font-size: 0.85em;
+            }
+            .tab-content {
+                padding: 20px;
+            }
+            table td::before {
+                font-size: 0.9em;
+            }
+            #daha-fazla-yanlis-butonu {
+                padding: 10px 20px;
+                font-size: 0.9em;
+            }
+            footer {
+                padding: 20px 15px;
+            }
+            footer a {
+                display: block;
+                margin: 5px auto;
+            }
+            #scrollTopBtn {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3em;
+                bottom: 15px;
+                right: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <header>
+        <h1>Edebî Dil ve Sosyal Medya Dili Karşılaştırması</h1>
+        <p>Dilin dönüşüm yolculuğunda iki farklı kutup: Gelenekselden modern iletişim araçlarına.</p>
+    </header>
+
+    <nav>
+        <a href="#giris"><i class="fas fa-info-circle"></i> Giriş</a>
+        <a href="#edebi-dil"><i class="fas fa-book-open"></i> Edebî Dil</a>
+        <a href="#sosyal-medya-dili"><i class="fas fa-share-alt"></i> Sosyal Medya Dili</a>
+        <a href="#karsilastirma"><i class="fas fa-balance-scale"></i> Karşılaştırma</a>
+        <a href="#etkiler"><i class="fas fa-chart-line"></i> Etkiler</a>
+        <a href="#siir-ornekleri"><i class="fas fa-feather-alt"></i> Şiir Örnekleri</a>
+        <a href="#dogru-kullanim"><i class="fas fa-check-circle"></i> Doğru Kullanım</a>
+        <a href="#yanlislar"><i class="fas fa-times-circle"></i> Sık Yapılan Yanlışlar</a>
+        <a href="#ulusal-projeler"><i class="fas fa-building"></i> Ulusal Projeler</a>
+        <a href="#kaynakca"><i class="fas fa-scroll"></i> Kaynakça</a>
+    </nav>
+
+    <main class="container">
+        <section id="giris">
+            <h2><i class="fas fa-info-circle"></i> Giriş</h2>
+            <p>Dil, insanlığın varoluşundan bu yana sürekli bir değişim ve gelişim içinde olmuştur. İletişim yöntemleri ve araçları çeşitlendikçe, dilin kendisi de bu yeniliklere adapte olarak farklı formlara bürünmüştür. Özellikle dijital çağın getirdiği sosyal medya platformları, dilin kullanım alışkanlıklarını kökten değiştirerek, edebî dille taban tabana zıt yeni bir dil "sosyal medya dili"nin ortaya çıkışına zemin hazırlamıştır. Bu araştırma, Türkçenin bu iki farklı kullanım biçimini, yani edebî dili ve sosyal medya dilini tüm yönleriyle karşılaştırmayı, aralarındaki temel farkları, benzerlikleri ve Türkçe üzerindeki etkilerini analiz etmeyi amaçlamaktadır. Dilin estetik ve kuralcı yapısından, hız ve pratikliğe dayalı yeni nesil iletişim biçimine doğru evrimini anlamak, hem dilbilim hem de sosyoloji açısından büyük önem taşımaktadır.</p>
+        </section>
+
+        <section id="edebi-dil">
+            <h2><i class="fas fa-book-open"></i> Edebî Dil</h2>
+            <p>Edebî dil, yüzyıllardır süregelen yazılı ve sözlü geleneğin, sanatın ve estetiğin yoğurduğu, kurallara bağlı, zengin ve derinlikli bir dil biçimidir. Kelime seçimi, cümle yapısı ve ifade biçimi titizlikle işlenir. Edebî dil, sadece bilgi aktarmanın ötesinde, okuyucuda veya dinleyicide estetik bir haz ve duygusal bir etki uyandırmayı hedefler.</p>
+            
+            <div class="image-container">
+                <img src="https://images.unsplash.com/photo-1549247738-9572b904494c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1NzUyNzR8MHwxfHNlYXJjaHw0fHxsaXRlcmFyeSUyMGxhbmd1YWdlfGVufDB8fHx8MTcwNjExMzI4MHww&ixlib=rb-4.0.3&q=80&w=1080" alt="Antik kitaplar ve yazım araçları, edebî dilin köklerini ve geleneksel yapısını simgeliyor.">
+                <p class="image-caption">Antik kitaplar ve yazım araçları, edebî dilin köklerini ve geleneksel yapısını simgeliyor.</p>
+            </div>
+
+            <h3 style="text-align: center; color: var(--accent-color); margin-top: 50px; font-size: 2em; font-family: 'Merriweather', serif;"><i class="fas fa-lightbulb"></i> Edebî Dilin Temel Özellikleri</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h3><i class="fas fa-spell-check"></i> Kuralcılık ve Dilbilgisi</h3>
+                    <p>Edebî dil, dilbilgisi kurallarına, imla ve noktalama işaretlerine titizlikle uyar. Cümle yapıları, kelime sıralaması ve eklerin kullanımı belirli kurallar çerçevesinde gerçekleşir. Bu, dilin doğru ve anlaşılır olmasını sağlar.</p>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-book"></i> Zengin Kelime Dağarcığı</h3>
+                    <p>Edebî metinlerde geniş ve çeşitli bir kelime dağarcığı kullanılır. Eş anlamlı, zıt anlamlı, mecaz anlamlı kelimelerle dilin ifade gücü artırılır. Bu zenginlik, metnin derinliğini ve estetik değerini yükseltir.</p>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-paint-brush"></i> Sanatsal İfade ve Estetik</h3>
+                    <p>Edebî dil, sanatsal kaygılarla şekillenir. Mecaz, benzetme, teşbih, istiare gibi edebi sanatlar yoğun olarak kullanılır. Amaç sadece bilgi aktarmak değil, aynı zamanda estetik bir haz ve duygusal bir etki yaratmaktır. Kelimelerin ve cümlelerin ahengi, ritmi ve musiki de bu dilin önemli unsurlarıdır.</p>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-globe-americas"></i> Kalıcılık ve Evrensellik</h3>
+                    <p>Edebî eserler, yazıldıkları dönemin ötesine geçerek evrensel ve kalıcı değerler taşır. Dilin zamanla değişen yapısına rağmen, edebî dilin temel özellikleri ve anlatım gücü nesiller boyu aktarılır. Bu, dilin kültürel bir miras olarak gelecek kuşaklara aktarılmasını gerektirir.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="sosyal-medya-dili">
+            <h2><i class="fas fa-share-alt"></i> Sosyal Medya Dili</h2>
+            <p>Sosyal medya dili, dijital platformlarda anlık iletişim kurma ihtiyacından doğmuş, hız, pratiklik ve görsellik odaklı, informal bir dil biçimidir. Genellikle kısa, öz ve görsel unsurlarla desteklenmiş ifadeler içerir. Bu dil, günlük konuşma dilinin dijital ortama yansımış, kendine özgü kuralları ve kısaltmaları olan dinamik bir yapıdır.</p>
+            
+            <div class="image-container">
+                <img src="https://images.unsplash.com/photo-1511217351651-d41f02c67923?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Akıllı telefonlar ve mesajlaşma ikonları, sosyal medya iletişiminin modern yüzünü gösteriyor.">
+                <p class="image-caption">Akıllı telefonlar ve mesajlaşma ikonları, sosyal medya iletişiminin modern yüzünü gösteriyor.</p>
+            </div>
+
+            <h3 style="text-align: center; color: var(--accent-color); margin-top: 50px; font-size: 2em; font-family: 'Merriweather', serif;"><i class="fas fa-mobile-alt"></i> Sosyal Medya Dilinin Temel Özellikleri</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h3><i class="fas fa-bolt"></i> Hız ve Pratiklik</h3>
+                    <p>Sosyal medya, anlık ve hızlı iletişimi teşvik eder. Bu nedenle, kelimeler kısaltılır, cümleler basitleştirilir ve dilbilgisi kurallarına pek dikkat edilmez. Amaç, mesajı en kısa sürede ve en az çabayla iletmektir.</p>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-image"></i> Görsel Odaklılık</h3>
+                    <p>Emojiler, GIF'ler, meme'ler ve fotoğraflar gibi görsel öğeler, sosyal medya dilinin ayrılmaz bir parçasıdır. Bu görseller, duyguları, tepkileri veya karmaşık fikirleri hızlı ve etkili bir şekilde ifade etmeyi sağlar, metin tabanlı iletişimi daha görsel ve az çaba gerektiren hale getirir.</p>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-comments"></i> Argo ve Günlük Konuşma Dili</h3>
+                    <p>Sosyal medya, resmiyetten uzak, günlük konuşma diline daha yakın bir yapıya sahiptir. Argo ifadeler, sokak ağzı ve popüler tabirler sıkça kullanılır. Dilbilgisi ve imla kurallarına çoğu zaman dikkat edilmez. Bu, samimi ve rahat bir iletişim ortamı yaratır.</p>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-language"></i> Yabancı Kelime Akışı</h3>
+                    <p>Küresel bir platform olması nedeniyle, özellikle İngilizce'den olmak üzere, birçok yabancı kelime hızlıca sosyal medya diline adapte olur ve Türkçeye yerleşir. Bu kelimeler genellikle Türkçede karşılığı olmasına rağmen kullanılır ve yeni nesil tarafından hızla benimsenir.</p>
+                </div>
+            </div>
+            <h3 style="text-align: center; color: var(--accent-color); margin-top: 50px; font-size: 2em; font-family: 'Merriweather', serif;"><i class="fas fa-lightbulb"></i> Sosyal Medyada Ortaya Çıkan Yeni Terimler</h3>
+            <div class="scrollable-list">
+                <ul>
+                    <li><strong>Selfie:</strong> Kendi fotoğrafını çekme.</li>
+                    <li><strong>Hashtag (#):</strong> Konuları veya anahtar kelimeleri işaretlemek için kullanılan etiket.</li>
+                    <li><strong>DM (Direct Message):</strong> Özel mesaj.</li>
+                    <li><strong>Like:</strong> Beğeni.</li>
+                    <li><strong>Follow/Unfollow:</strong> Takip etme/takibi bırakma.</li>
+                    <li><strong>Retweet/Repost:</strong> Paylaşımları tekrar paylaşma.</li>
+                    <li><strong>Stalker:</strong> Birini gizlice takip eden kişi.</li>
+                    <li><strong>Troll:</strong> Tartışma çıkarmayı seven internet kullanıcısı.</li>
+                    <li><strong>Meme:</strong> İnternette hızla yayılan görsel veya metin.</li>
+                    <li><strong>Cringe:</strong> Utanç verici, rahatsız edici durum.</li>
+                    <li><strong>Flexlemek:</strong> Gösteriş yapmak.</li>
+                    <li><strong>Shiplemek:</strong> İki karakterin romantik ilişkisini desteklemek.</li>
+                    <li><strong>POV (Point of View):</strong> Bakış açısı.</li>
+                    <li><strong>FOMO (Fear of Missing Out):</strong> Bir şeyleri kaçırma korkusu.</li>
+                    <li><strong>Influencer:</strong> Sosyal medyada geniş kitleleri etkileyen kişi.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="karsilastirma">
+            <h2><i class="fas fa-balance-scale"></i> Edebî Dil ve Sosyal Medya Dili Karşılaştırması</h2>
+            <div class="tabs">
+                <button class="tab-button active" data-tab="yapısal"><i class="fas fa-sitemap"></i> Yapısal Farklar</button>
+                <button class="tab-button" data-tab="amacsallik"><i class="fas fa-bullseye"></i> Amaçsal Farklar</button>
+                <button class="tab-button" data-tab="etkilesim"><i class="fas fa-handshake"></i> Etkileşim ve Gelişim</button>
+            </div>
+
+            <div id="yapısal" class="tab-content active">
+                <h4><i class="fas fa-sitemap"></i> Yapısal Farklar</h4>
+                <p>Edebî dil ve sosyal medya dili arasındaki yapısal farklar, her iki dilin de kendine özgü kullanım alanları ve iletişim hedeflerinden kaynaklanır.</p>
+                <ul>
+                    <li><strong>Cümle Yapısı:</strong> Edebî dilde karmaşık, uzun ve sanatsal cümleler sıkça kullanılırken; sosyal medya dilinde kısa, devrik ve genellikle bitmemiş cümleler yaygındır.</li>
+                    <li><strong>Kelime Dağarcığı:</strong> Edebî dil, zengin ve çeşitli bir kelime dağarcığına sahipken; sosyal medya dili daha sınırlı, tekrarlayan kelimeler ve kısaltmalar içerir.</li>
+                    <li><strong>Dilbilgisi ve İmla:</strong> Edebî dil, dilbilgisi ve imla kurallarına sıkı sıkıya bağlıdır. Sosyal medya dilinde ise bu kurallara daha az dikkat edilir, hatta çoğu zaman göz ardı edilir.</li>
+                    <li><strong>Noktalama İşaretleri:</strong> Edebî dilde noktalama işaretleri anlamı pekiştirmek için hassasiyetle kullanılır. Sosyal medya dilinde ise emojiler ve ardışık noktalama işaretleri (örneğin "...") anlamı güçlendirmek veya duyguyu ifade etmek için kullanılır.</li>
+                    <li><strong>Görsel Kullanım:</strong> Edebî dil genellikle metin tabanlıyken; sosyal medya dili emojiler, GIF'ler, fotoğraflar ve videolar gibi görsel öğeleri yoğun bir şekilde kullanır.</li>
+                </ul>
+            </div>
+
+            <div id="amacsallik" class="tab-content">
+                <h4><i class="fas fa-bullseye"></i> Amaçsal Farklar</h4>
+                <p>Her iki dilin de farklı iletişim amaçları vardır. Bu amaçlar, dilin biçimini ve içeriğini doğrudan etkiler.</p>
+                <ul>
+                    <li><strong>İletişim Hızı:</strong> Sosyal medya dilinin temel amacı hızlı bilgi aktarımı ve anlık geri bildirim almak iken, edebî dil daha çok derinlemesine düşünce aktarımını ve estetik bir deneyim sunmayı hedefler.</li>
+                    <li><strong>Hedef Kitle:</strong> Edebî dil genellikle daha geniş, evrensel bir okuyucu kitlesine hitap ederken; sosyal medya dili belirli bir topluluğa veya trende aşina olan daha dar bir kitleye hitap edebilir.</li>
+                    <li><strong>Duygu İfadesi:</strong> Edebî dil, duyguları kelimelerin ve edebi sanatların derinliğiyle ifade ederken; sosyal medya dili emojiler, büyük harf kullanımı ve ünlemlerle duyguları hızlı ve doğrudan belirtir.</li>
+                    <li><strong>Resmiyet Düzeyi:</strong> Edebî dil daha resmî ve ciddi bir tona sahipken; sosyal medya dili daha samimi, rahat ve gündelik bir ton taşır.</li>
+                </ul>
+            </div>
+
+            <div id="etkilesim" class="tab-content">
+                <h4><i class="fas fa-handshake"></i> Etkileşim ve Gelişim</h4>
+                <p>Edebî dil ve sosyal medya dili birbirini etkileyebilir. Özellikle sosyal medya dilindeki bazı yenilikler, zamanla edebî dile sızabilir veya edebî dil, sosyal medyada farklı biçimlerde yankı bulabilir.</p>
+                <ul>
+                    <li><strong>Edebî Dilin Sosyal Medya Üzerindeki Etkisi:</strong> Bazı sosyal medya kullanıcıları veya içerik üreticileri, paylaşımlarında daha özenli ve edebî bir dil kullanmayı tercih ederek kitlelerini etkileyebilirler. Şiirler, alıntılar veya derinlemesine düşünceler bu platformlarda da paylaşılabilir.</li>
+                    <li><strong>Sosyal Medya Dilinin Edebî Dil Üzerindeki Etkisi:</strong> Nadiren de olsa, sosyal medya dilinde popülerleşen bazı ifadeler veya kısaltmalar, modern edebî metinlerde (özellikle diyaloglarda veya karakterlerin iç seslerinde) yer bulabilir. Ancak bu, genellikle belirli bir stilistik etki yaratma amacıyla ve bilinçli bir tercih olarak gerçekleşir.</li>
+                    <li><strong>Sürekli Gelişim:</strong> Her iki dil de yaşayan organizmalar gibidir ve sürekli olarak evrim geçirirler. Sosyal medya dilinin hızla değişen doğası, edebî dilin daha yavaş ve istikrarlı gelişimine tezat oluşturur.</li>
+                </ul>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Özellik</th>
+                        <th>Edebî Dil</th>
+                        <th>Sosyal Medya Dili</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-label="Özellik">Amaç</td>
+                        <td data-label="Edebî Dil">Estetik haz, derinlik, kalıcılık</td>
+                        <td data-label="Sosyal Medya Dili">Hız, anlık iletişim, pratiklik</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Özellik">Kelime Dağarcığı</td>
+                        <td data-label="Edebî Dil">Zengin, çeşitli, mecazlı</td>
+                        <td data-sosyal-medya-dili="Sosyal Medya Dili">Sınırlı, tekrarlayan, kısaltmalı</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Özellik">Cümle Yapısı</td>
+                        <td data-label="Edebî Dil">Karmaşık, tam, kurallı</td>
+                        <td data-label="Sosyal Medya Dili">Kısa, devrik, eksik</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Özellik">Dilbilgisi/İmla</td>
+                        <td data-label="Edebî Dil">Sıkı bağlılık</td>
+                        <td data-label="Sosyal Medya Dili">Çoğunlukla göz ardı edilir</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Özellik">Duygu İfadesi</td>
+                        <td data-label="Edebî Dil">Edebi sanatlar, detaylı betimleme</td>
+                        <td data-label="Sosyal Medya Dili">Emojiler, ünlemler, büyük harf</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Özellik">Resmiyet Düzeyi</td>
+                        <td data-label="Edebî Dil">Yüksek, ciddi</td>
+                        <td data-label="Sosyal Medya Dili">Düşük, samimi, gündelik</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Özellik">Kalıcılık</td>
+                        <td data-label="Edebî Dil">Yüksek, kültürel miras</td>
+                        <td data-label="Sosyal Medya Dili">Düşük, geçici trendlere bağlı</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="chart-container">
+                <canvas id="comparisonRadarChart"></canvas>
+            </div>
+        </section>
+
+        <section id="etkiler">
+            <h2><i class="fas fa-chart-line"></i> Sosyal Medya Dilinin Türkçe Üzerindeki Etkileri</h2>
+            <h3 style="color: var(--accent-color); font-family: 'Merriweather', serif;">Olumsuz Etkiler</h3>
+            <ul class="impact-list">
+                <li class="negative"><strong>Dilbilgisi Zayıflığı:</strong> Dilbilgisi ve imla kurallarına uyulmaması, genel dil kullanımında zayıflığa yol açar, özellikle genç nesiller arasında yazılı ifade becerilerini düşürebilir.</li>
+                <li class="negative"><strong>Kelime Dağarcığı Daralması:</strong> Tekrarlayan kelimeler, kısaltmalar ve sınırlı ifade biçimleri, bireylerin aktif kelime dağarcığının daralmasına neden olabilir.</li>
+                <li class="negative"><strong>Anlam Kaybı ve Yüzeysellik:</strong> Hızlı ve kısa ifadeler, derinlemesine düşünmeyi ve karmaşık konuları ifade etmeyi zorlaştırır, bu da iletişimin yüzeyselleşmesine yol açabilir.</li>
+                <li class="negative"><strong>Yabancılaşma:</strong> Aşırı yabancı kelime kullanımı ve İngilizcenin dil yapısına etkisi, Türkçenin özgün yapısından uzaklaşmasına ve yabancılaşmasına neden olabilir.</li>
+                <li class="negative"><strong>Resmiyet Kaybı:</strong> Gündelik ve samimi dilin her alana yayılması, resmiyet gerektiren durumlarda (akademik, hukuki, bürokratik) dilin yanlış veya yetersiz kullanılmasına sebep olabilir.</li>
+            </ul>
+            <h3 style="color: var(--primary-color); font-family: 'Merriweather', serif;">Olumlu Etkiler</h3>
+            <ul class="impact-list">
+                <li class="positive"><strong>Hızlı ve Kolay İletişim:</strong> Sosyal medya dili, anlık ve etkili iletişim kurmayı sağlayarak bilgi akışını hızlandırır ve insanlar arasında kolayca bağ kurulmasına olanak tanır.</li>
+                <li class="positive"><strong>Yaratıcılık ve Esneklik:</strong> Kısaltmalar, emojiler ve yeni kelimeler dilin daha yaratıcı ve esnek kullanılmasını teşvik eder, bu da özellikle genç nesiller arasında yeni ifade biçimlerinin doğmasına yol açar.</li>
+                <li class="positive"><strong>Küresel Etkileşim:</strong> Sosyal medya dili, farklı kültürlerden insanlarla iletişim kurmayı kolaylaştırır, bu da kültürel alışverişi ve dil öğrenimini teşvik edebilir.</li>
+                <li class="positive"><strong>Duygusal İfade Zenginliği:</strong> Emojiler ve görseller, yazılı iletişimde duygusal ifadeyi daha zengin ve anlaşılır hale getirir, bu da yanlış anlaşılmaları azaltabilir.</li>
+                <li class="positive"><strong>Dilin Dinamik Gelişimi:</strong> Sosyal medya, dile yeni kelimeler ve ifadeler kazandırarak dilin canlılığını ve dinamizmini korumasına yardımcı olur.</li>
+            </ul>
+        </section>
+
+        <section id="siir-ornekleri">
+            <h2><i class="fas fa-feather-alt"></i> Şiir Örnekleri</h2>
+            <p>Edebî dilin gücünü ve estetiğini daha iyi anlamak için, Türk edebiyatının önemli şairlerinden seçilmiş şiir örneklerini inceleyelim. Bu şiirler, kelime seçiminin, imgelerin ve ritmin dilin nasıl bir sanat eserine dönüştüğünü gözler önüne sermektedir.</p>
+
+            <div class="siir-kart">
+                <h3>Sana Mecburum</h3>
+                <pre>
+Ben sana mecburum bilemezsin
+Adını mıh gibi aklımda tutuyorum
+Büyüdükçe büyüyor gözlerim
+Ben sana mecburum bilemezsin
+İçimi seninle ısıtıyorum.
+
+Ağaçlar sonbahara hazırlanırken
+Bu şehir o eski İstanbul mudur?
+Ölümden sonra da ruhum
+Seninle bir göçmen kuş olmalı
+Ben sana mecburum bilemezsin.
+Ne kadar sevdiysem seni
+O kadar mecburum sana
+O kadar mecburum sana
+O kadar mecburum sana...
+                </pre>
+                <p class="sair-adi">~ Attila İlhan</p>
+            </div>
+
+            <div class="siir-kart">
+                <h3>Memleketimden İnsan Manzaraları</h3>
+                <pre>
+Kuşlar uçar senin göğsünde,
+Kuşlar uçar senin tarlalarında,
+Kuşlar uçar senin çocuklarının gözlerinde.
+Senin köylülerin,
+senin işçilerin,
+senin aydınların,
+senin kadınların,
+senin erkeklerin,
+Senin...
+
+Ağaçlar büyür senin toprağında,
+Ağaçlar büyür senin evlerinde,
+Ağaçlar büyür senin çocuklarının ellerinde.
+Senin dağlarında,
+senin ovalarında,
+senin göllerinde,
+senin derelerinde...
+                </pre>
+                <p class="sair-adi">~ Nazım Hikmet Ran</p>
+            </div>
+
+            <div class="siir-kart">
+                <h3>Monna Rosa</h3>
+                <pre>
+Monna Rosa, siyah güller, ak güller
+Geyve'nin gülleri ve beyaz yatak
+Kanadı kırık kuş merhamet ister
+Ah, senin yüzünden kana batacak
+Monna Rosa siyah güller, ak güller.
+
+Ulur aya karşı kirli çakallar,
+Ürkek ürkek bakar tavşanlar dağa.
+Monna Rosa, donmuş kanlar ve akıllar
+Biricik sevgilim, aşkım, ay parçam...
+                </pre>
+                <p class="sair-adi">~ Sezai Karakoç</p>
+            </div>
+            <button id="daha-fazla-siir-butonu" style="display: none;"><i class="fas fa-plus"></i> Daha Fazla Şiir Göster</button>
+
+        </section>
+
+        <section id="dogru-kullanim">
+            <h2><i class="fas fa-check-circle"></i> Dilimizi Doğru Kullanma İpuçları</h2>
+            <div class="accordion">
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <span><i class="fas fa-compass"></i> 1. Bağlama Göre Dilinizi Ayarlayın</span>
+                        <span class="icon fas fa-plus"></span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Farklı iletişim ortamlarında (akademik yazı, resmi yazışma, sosyal medya paylaşımı vb.) uygun dil kullanımını öğrenin. Her ortamın kendine özgü bir dil beklentisi olduğunu unutmayın.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <span><i class="fas fa-book-reader"></i> 2. Okuma Alışkanlığınızı Geliştirin</span>
+                        <span class="icon fas fa-plus"></span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Edebî eserler, gazete makaleleri, bilimsel yayınlar okuyarak kelime dağarcığınızı geliştirin ve doğru cümle yapılarını öğrenin. Okumak, dilin inceliklerini kavramanın en iyi yoludur.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <span><i class="fas fa-pencil-alt"></i> 3. Yazılı İletişimde İmla ve Noktalama Kurallarına Dikkat Edin</span>
+                        <span class="icon fas fa-plus"></span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Özellikle e-posta, rapor, resmî yazı gibi durumlarda dilbilgisi ve noktalama hatalarından kaçının. Gerekirse yazım kılavuzlarından veya online araçlardan yardım alın.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <span><i class="fas fa-cut"></i> 4. Kısaltmaları Bilinçli Kullanın</span>
+                        <span class="icon fas fa-plus"></span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Sosyal medyada kullanılan kısaltmalar ve emojiler eğlenceli olabilir ancak her ortamda uygun değildir. Anlamı bozmayacak ve yanlış anlaşılmaya yol açmayacak şekilde kullanmaya özen gösterin.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <span><i class="fas fa-bullhorn"></i> 5. Bilinçli Bir Dil Kullanıcısı ve Örnek Olun</span>
+                        <span class="icon fas fa-plus"></span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Sosyal medyada dilini doğru ve etkili kullanan hesapları takip edin. Kendi paylaşımlarınızda da Türkçeye özen göstererek çevrenizdekilere iyi bir örnek olun. Dil bilinci, paylaşıldıkça artar.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="yanlislar">
+            <h2><i class="fas fa-times-circle"></i> Sosyal Medyada Sık Yapılan Yanlışlar ve Doğruları</h2>
+            <div id="yanlis-ornekler-konteyner">
+                </div>
+            <button id="daha-fazla-yanlis-butonu"><i class="fas fa-plus"></i> Daha Fazla Örnek Göster</button>
+        </section>
+
+        <section id="ulusal-projeler">
+            <h2><i class="fas fa-building"></i> Ulusal Dil Bilinci Projeleri ve Kurumlar</h2>
+            <div class="project-block">
+                <h3><i class="fas fa-university"></i> Türk Dil Kurumu (TDK)</h3>
+                <p>Türkçenin zenginliğini korumak ve geliştirmek amacıyla çalışmalar yapan en önemli kurumdur. Dilbilgisi kuralları, imla kılavuzları ve sözlüklerle Türkçenin doğru kullanımına rehberlik eder.</p>
+                <p><a href="https://tdk.gov.tr/" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> Daha Fazla Bilgi İçin Ziyaret Edin</a></p>
+            </div>
+            <div class="project-block">
+                <h3><i class="fas fa-graduation-cap"></i> Milli Eğitim Bakanlığı Dil Eğitimi Projeleri</h3>
+                <p>Milli Eğitim Bakanlığı, okullarda dil eğitimini güçlendirmeye yönelik çeşitli projeler yürütmektedir. Bu projeler, öğrencilerin doğru ve etkili Türkçe kullanım becerilerini geliştirmeyi hedefler.</p>
+                <p><a href="https://www.meb.gov.tr/" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> Daha Fazla Bilgi İçin Ziyaret Edin</a></p>
+            </div>
+            <div class="project-block">
+                <h3><i class="fas fa-microphone"></i> TRT Türkçem Projesi</h3>
+                <p>TRT tarafından yürütülen bu proje, Türkçenin doğru ve güzel kullanımına dikkat çekmeyi amaçlar. Radyo ve televizyon programlarıyla dil bilincinin artırılmasına katkı sağlar.</p>
+                <p><a href="https://www.trt.net.tr/anasayfa/" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> TRT Anasayfa</a></p>
+            </div>
+        </section>
+
+        <section id="kaynakca">
+            <h2><i class="fas fa-scroll"></i> Kaynakça</h2>
+            <p>Bu araştırmanın hazırlanmasında çeşitli dilbilim kaynaklarından, akademik makalelerden ve Türk Dil Kurumu yayınlarından faydalanılmıştır.</p>
+            <ul>
+                <li>Türk Dil Kurumu (TDK). (Erişim tarihi: [Güncel Tarih]). <i>Güncel Türkçe Sözlük</i>.</li>
+                <li>Gülseçkin, M., & Yılmaz, H. (2018). Sosyal Medya Dili ve Türkçenin Kullanımı Üzerine Bir Değerlendirme. <i>Dil ve Edebiyat Araştırmaları Dergisi</i>, 12(2), 145-160.</li>
+                <li>Sever, K. (2015). <i>Edebî Dil ve İletişim</i>. Ankara: Pegem A Yayıncılık.</li>
+                <li>Ergin, M. (2009). <i>Türk Dil Bilgisi</i>. İstanbul: Bayrak Yayınları.</li>
+                <li>(Ekleyeceğiniz diğer kaynaklar buraya gelebilir.)</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; <span id="currentYear"></span> Edebî Dil ve Sosyal Medya Dili Karşılaştırması. Tüm Hakları Saklıdır.</p>
+        <p>Hazırlayanlar: Shayan Golmezerji ve Yunus Çalışkan</p>
+        <p>
+            <a href="https://www.meb.gov.tr/" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> Milli Eğitim Bakanlığı</a> | 
+            <a href="https://tdk.gov.tr/" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> Türk Dil Kurumu</a>
+        </p>
+    </footer>
+
+    <button id="scrollTopBtn" title="Başa Dön"><i class="fas fa-arrow-up"></i></button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Yükleme Ekranı ---
+            const loadingOverlay = document.getElementById('loading-overlay');
+            window.addEventListener('load', () => {
+                loadingOverlay.classList.add('hidden');
+            });
+
+            // --- Aktif Navigasyon Linki ve Yumuşak Kaydırma ---
+            const navLinks = document.querySelectorAll('nav a');
+            const sections = document.querySelectorAll('section');
+
+            function changeActiveLink() {
+                let currentActive = null;
+                const navHeight = document.querySelector('nav').offsetHeight;
+                // Sayfanın üst kısmındaki görünür alanı artırarak daha erken aktive olmasını sağla
+                const offset = navHeight + 50; // Navigasyon yüksekliği ve ek boşluk
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - offset;
+                    const sectionBottom = sectionTop + section.offsetHeight;
+                    if (window.scrollY >= sectionTop && window.scrollY < sectionBottom) {
+                        currentActive = section.id;
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active-link');
+                    if (link.getAttribute('href').includes(currentActive)) {
+                        link.classList.add('active-link');
+                    }
+                });
+            }
+
+            const nav = document.querySelector('nav');
+            window.addEventListener('scroll', changeActiveLink);
+            changeActiveLink(); // Sayfa yüklendiğinde bir kez çalıştır
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        window.scrollTo({
+                            top: targetSection.offsetTop - nav.offsetHeight, // Navigasyon yüksekliği kadar ayarla
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // --- Tab Fonksiyonelliği ---
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tab = button.dataset.tab;
+
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    button.classList.add('active');
+                    document.getElementById(tab).classList.add('active');
+                });
+            });
+
+            // --- Radar Grafik ---
+            const ctx = document.getElementById('comparisonRadarChart').getContext('2d');
+            const comparisonRadarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Resmiyet', 'Kelime Zenginliği', 'Kuralcılık', 'Hız', 'Görsel İfade', 'Kalıcılık'],
+                    datasets: [
+                        {
+                            label: 'Edebî Dil',
+                            data: [5, 5, 5, 1, 1, 5],
+                            backgroundColor: 'rgba(52, 152, 219, 0.3)',
+                            borderColor: 'rgba(52, 152, 219, 1)',
+                            borderWidth: 2,
+                            pointBackgroundColor: 'rgba(52, 152, 219, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(52, 152, 219, 1)'
+                        },
+                        {
+                            label: 'Sosyal Medya Dili',
+                            data: [1, 2, 1, 5, 5, 1],
+                            backgroundColor: 'rgba(231, 76, 60, 0.3)',
+                            borderColor: 'rgba(231, 76, 60, 1)',
+                            borderWidth: 2,
+                            pointBackgroundColor: 'rgba(231, 76, 60, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(231, 76, 60, 1)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 14,
+                                    family: 'Montserrat'
+                                },
+                                color: '#2c3e50'
+                            },
+                            ticks: {
+                                display: false,
+                                beginAtZero: true,
+                                max: 5,
+                                min: 0
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 14,
+                                    family: 'Montserrat'
+                                },
+                                color: '#2c3e50'
+                            }
+                        },
+                        tooltip: {
+                            bodyFont: {
+                                family: 'Montserrat'
+                            },
+                            titleFont: {
+                                family: 'Montserrat',
+                                weight: 'bold'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // --- Akordiyon ---
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    header.classList.toggle('active');
+                    if (header.classList.contains('active')) {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                    } else {
+                        content.style.maxHeight = '0';
+                    }
+                });
+            });
+
+            // --- Şiir Örnekleri ---
+            const siirler = [
+                {
+                    baslik: "Sana Mecburum",
+                    sair: "Attila İlhan",
+                    metin: `Ben sana mecburum bilemezsin
+Adını mıh gibi aklımda tutuyorum
+Büyüdükçe büyüyor gözlerim
+Ben sana mecburum bilemezsin
+İçimi seninle ısıtıyorum.
+
+Ağaçlar sonbahara hazırlanırken
+Bu şehir o eski İstanbul mudur?
+Ölümden sonra da ruhum
+Seninle bir göçmen kuş olmalı
+Ben sana mecburum bilemezsin.
+Ne kadar sevdiysem seni
+O kadar mecburum sana
+O kadar mecburum sana
+O kadar mecburum sana...`
+                },
+                {
+                    baslik: "Memleketimden İnsan Manzaraları",
+                    sair: "Nazım Hikmet Ran",
+                    metin: `Kuşlar uçar senin göğsünde,
+Kuşlar uçar senin tarlalarında,
+Kuşlar uçar senin çocuklarının gözlerinde.
+Senin köylülerin,
+senin işçilerin,
+senin aydınların,
+senin kadınların,
+senin erkeklerin,
+Senin...
+
+Ağaçlar büyür senin toprağında,
+Ağaçlar büyür senin evlerinde,
+Ağaçlar büyür senin çocuklarının ellerinde.
+Senin dağlarında,
+senin ovalarında,
+senin göllerinde,
+senin derelerinde...`
+                },
+                {
+                    baslik: "Monna Rosa",
+                    sair: "Sezai Karakoç",
+                    metin: `Monna Rosa, siyah güller, ak güller
+Geyve'nin gülleri ve beyaz yatak
+Kanadı kırık kuş merhamet ister
+Ah, senin yüzünden kana batacak
+Monna Rosa siyah güller, ak güller.
+
+Ulur aya karşı kirli çakallar,
+Ürkek ürkek bakar tavşanlar dağa.
+Monna Rosa, donmuş kanlar ve akıllar
+Biricik sevgilim, aşkım, ay parçam...`
+                },
+                {
+                    baslik: "Otuz Beş Yaş Şiiri",
+                    sair: "Cahit Sıtkı Tarancı",
+                    metin: `Yaş otuz beş! yolun yarısı eder.
+Dante gibi ortasındayız ömrün.
+Delikanlı çağımızdaki cevher,
+Yani o yaşta ki şiir, rüzgâr, nehir,
+Bülbül gibi ortasındayız ömrün.
+
+Şakaklarıma kar mı yağdı ne?
+Benim mi Allahım bu çizgili yüz?
+Ya gözler altındaki mor halkalar?
+Neden böyle düşman görünürsünüz,
+Yıllar yılı dost bildiğim aynalar?`
+                },
+                {
+                    baslik: "Çile",
+                    sair: "Necip Fazıl Kısakürek",
+                    metin: `Her şey akar, su, tarih, yıldız, insan ve fikir;
+Oluklar çift; birinden nur akar, birinden kir.
+Akışta demetlenmiş ne varsa, hepsi çile;
+Bir cennet rüyasını söyler gibi dile.
+Oluklar çift; birinden nur akar, birinden kir.
+Her şey akar, su, tarih, yıldız, insan ve fikir.`
+                }
+            ];
+
+            const siirOrnekleriKonteyner = document.getElementById('siir-ornekleri');
+            const dahaFazlaSiirButonu = document.getElementById('daha-fazla-siir-butonu');
+            let gosterilenSiirSayisi = 3; // İlk başta 3 şiir göster
+
+            function siirleriGoster() {
+                // Konteyneri temizlemeden önce sadece mevcut şiir kartlarını kaldır
+                const mevcutSiirKartlari = siirOrnekleriKonteyner.querySelectorAll('.siir-kart');
+                mevcutSiirKartlari.forEach(kart => kart.remove());
+
+                for (let i = 0; i < gosterilenSiirSayisi && i < siirler.length; i++) {
+                    const siir = siirler[i];
+                    const div = document.createElement('div');
+                    div.classList.add('siir-kart');
+                    div.innerHTML = `
+                        <h3>${siir.baslik}</h3>
+                        <pre>${siir.metin}</pre>
+                        <p class="sair-adi">~ ${siir.sair}</p>
+                    `;
+                    siirOrnekleriKonteyner.insertBefore(div, dahaFazlaSiirButonu); // Butondan önce ekle
+                }
+
+                if (gosterilenSiirSayisi >= siirler.length) {
+                    dahaFazlaSiirButonu.style.display = 'none';
+                } else {
+                    dahaFazlaSiirButonu.style.display = 'block'; // Butonu göster
+                }
+            }
+
+            dahaFazlaSiirButonu.addEventListener('click', () => {
+                gosterilenSiirSayisi += 2; // Her tıklamada 2 şiir daha ekle
+                siirleriGoster();
+            });
+
+            siirleriGoster(); // Sayfa yüklendiğinde ilk şiirleri göster
+
+
+            // --- Yanlış Örnekler Yüklemesi ---
+            const yanlisOrnekler = [
+                { wrong: "Naber kanka, n'apıyosun?", correct: "Merhaba arkadaşım, nasılsınız?" },
+                { wrong: "Çok tşkler knk, süper oldu.", correct: "Çok teşekkür ederim, harika oldu." },
+                { wrong: "Akşama gidicem, haberleşiriz.", correct: "Akşam gideceğim, haberleşiriz." },
+                { wrong: "Bişey dicem, çok önemli.", correct: "Bir şey söyleyeceğim, çok önemli." },
+                { wrong: "Bu kezban da ne yorum yapmış?", correct: "Bu kişi de ne kadar uygunsuz bir yorum yapmış?" },
+                { wrong: "Eyvallah hocam.", correct: "Teşekkür ederim öğretmenim." },
+                { wrong: "Bence de haklısın.", correct: "Ben de öyle düşünüyorum, haklısınız." },
+                { wrong: "Aga n'aber?", correct: "Merhaba arkadaşım." },
+                { wrong: "Kanka gelsene bi.", correct: "Dostum, buraya gelir misin?" },
+                { wrong: "Şunu bunu, falan filan aldık.", correct: "Şunu, bunu ve benzeri şeyleri aldık." },
+                { wrong: "Aynen, çok doğru.", correct: "Kesinlikle, çok doğru söylüyorsunuz." },
+                { wrong: "Boş yapma ya, ne alaka şimdi?", correct: "Anlamsız konuşmayın lütfen, konuyla ilgisi nedir?" },
+                { wrong: "Hll olsun bro, çok iyi yaptın.", correct: "Helal olsun kardeşim, çok iyi yaptın." },
+                { wrong: "Sjsjjs", correct: "Çok güldüm / Bu çok eğlenceliydi." }, // Gülme
+                { wrong: "GT var mı?", correct: "Karşılıklı takip etmek ister misiniz?" },
+                { wrong: "Fotoğrafına like attım.", correct: "Fotoğrafınızı beğendim." },
+                { wrong: "Bana DM atabilirsin.", correct: "Bana özel mesaj gönderebilirsiniz." },
+                { wrong: "Bu olay cringe.", correct: "Bu olay utanç verici/tuhaf." },
+                { wrong: "Yeni telefonunu flexliyor.", correct: "Yeni telefonunun gösterişini yapıyor." },
+                { wrong: "Herkes geldi mi?", correct: "Herkes geldi mi?" },
+                { wrong: "Yalnış anladın", correct: "Yanlış anladın" },
+                { wrong: "Bu klavuz çok iyi", correct: "Bu kılavuz çok iyi" },
+                { wrong: "O öyle deyil", correct: "O öyle değil" },
+                { wrong: "Pekçok insan vardı", correct: "Pek çok insan vardı" },
+                { wrong: "Bir kaç gün sonra", correct: "Birkaç gün sonra" }, // 'Birkaç' bitişik yazılır
+                { wrong: "Yarın yazıcam", correct: "Yarın yazacağım" },
+                { wrong: "Ben de gelicem", correct: "Ben de geleceğim" },
+                { wrong: "Elinize saglık hocam", correct: "Elinize sağlık hocam" },
+                { wrong: "Falan filan işte", correct: "Vesaire / Ve benzeri şeyler işte" },
+                { wrong: "Sıradışı bir durum", correct: "Sıra dışı bir durum" },
+                { wrong: "Yanyana yürüdüler", correct: "Yan yana yürüdüler" },
+                { wrong: "Hertaraf da sen varsın", correct: "Her taraf da sen varsın" },
+                { wrong: "Cok guzel", correct: "Çok güzel" }, // Türkçe karakter eksikliği
+                { wrong: "Slm nbr", correct: "Selam, nasılsın?" },
+                { wrong: "Oki", correct: "Tamam" },
+                { wrong: "Thx", correct: "Teşekkürler" },
+                { wrong: "Brb", correct: "Hemen döneceğim" },
+                { wrong: "Lol", correct: "Çok komik" },
+                { wrong: "Wtf", correct: "Ne oluyor / Şaşkınlık ifadesi" },
+                { wrong: "Gg", correct: "İyi oyun (good game)" },
+                { wrong: "Np", correct: "Sorun değil (no problem)" },
+                { wrong: "Imo", correct: "Bence (in my opinion)" }
+            ];
+
+            const yanlisOrneklerKonteyner = document.getElementById('yanlis-ornekler-konteyner');
+            const dahaFazlaYanlisButonu = document.getElementById('daha-fazla-yanlis-butonu');
+            let gosterilenOrnekSayisi = 5; // İlk başta kaç örnek gösterileceği
+
+            function ornekleriGoster() {
+                yanlisOrneklerKonteyner.innerHTML = '';
+                for (let i = 0; i < gosterilenOrnekSayisi && i < yanlisOrnekler.length; i++) {
+                    const ornek = yanlisOrnekler[i];
+                    const div = document.createElement('div');
+                    div.classList.add('wrong-example');
+                    div.innerHTML = `<p><strong>Yanlış:</strong> ${ornek.wrong}</p><p><strong>Doğrusu:</strong> <span class="correct-text">${ornek.correct}</span></p>`;
+                    yanlisOrneklerKonteyner.appendChild(div);
+                }
+
+                if (gosterilenOrnekSayisi >= yanlisOrnekler.length) {
+                    dahaFazlaYanlisButonu.style.display = 'none';
+                } else {
+                    dahaFazlaYanlisButonu.style.display = 'flex'; // Butonu göster
+                }
+            }
+
+            dahaFazlaYanlisButonu.addEventListener('click', () => {
+                gosterilenOrnekSayisi += 5; // Her tıklamada 5 örnek daha ekle
+                ornekleriGoster();
+            });
+
+            ornekleriGoster(); // Sayfa yüklendiğinde ilk örnekleri göster
+
+            // --- Bölüm Animasyonları (Intersection Observer) ---
+            const animatedSections = document.querySelectorAll('section');
+            const observerOptions = {
+                root: null, // viewport'u kök olarak kullan
+                rootMargin: '0px',
+                threshold: 0.1 // Bölümün %10'u görünür olduğunda
+            };
+
+            const sectionObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            animatedSections.forEach((section) => {
+                sectionObserver.observe(section);
+            });
+
+
+            // --- Başa Dön Butonu ---
+            const scrollTopBtn = document.getElementById("scrollTopBtn");
+            if (scrollTopBtn) {
+                window.onscroll = function() {scrollFunction()};
+
+                function scrollFunction() {
+                    if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                        scrollTopBtn.style.display = "flex"; /* flex olarak göster */
+                        scrollTopBtn.style.opacity = "1";
+                    } else {
+                        scrollTopBtn.style.opacity = "0";
+                        setTimeout(() => {
+                            if (scrollTopBtn.style.opacity === "0") {
+                                scrollTopBtn.style.display = "none";
+                            }
+                        }, 300);
+                    }
+                }
+
+                scrollTopBtn.addEventListener('click', () => {
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                });
+            }
+
+            // --- Footer'a Güncel Yılı Ekle ---
+            const currentYearSpan = document.getElementById('currentYear');
+            if(currentYearSpan) currentYearSpan.textContent = new Date().getFullYear();
+
+        });
+    </script>
+</body>
+</html>
